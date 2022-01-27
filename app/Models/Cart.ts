@@ -8,7 +8,7 @@ export default class Cart extends BaseModel {
   public id: number
 
   @column()
-  public min_cart_value: number
+  public minCartValue: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

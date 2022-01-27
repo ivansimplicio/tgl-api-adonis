@@ -21,7 +21,7 @@ export default class Game extends BaseModel {
   public price: number
 
   @column()
-  public max_number: number
+  public maxNumber: number
 
   @column()
   public color: string
@@ -33,7 +33,7 @@ export default class Game extends BaseModel {
   public updatedAt: DateTime
 
   @hasMany(() => Bet, {
-    foreignKey: 'game_id',
+    foreignKey: 'gameId',
   })
   public bets: HasMany<typeof Bet>
 }

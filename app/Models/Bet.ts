@@ -9,13 +9,13 @@ export default class Bet extends BaseModel {
   public id: number
 
   @column()
-  public chosen_numbers: string
+  public chosenNumbers: string
 
   @column()
-  public game_id: number
+  public gameId: number
 
   @column()
-  public user_id: number
+  public userId: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -24,7 +24,7 @@ export default class Bet extends BaseModel {
   public updatedAt: DateTime
 
   @belongsTo(() => Game, {
-    foreignKey: 'game_id',
+    foreignKey: 'gameId',
   })
   public gameType: BelongsTo<typeof Game>
 }
