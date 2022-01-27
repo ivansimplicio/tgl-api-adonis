@@ -1,6 +1,8 @@
 import Game from 'App/Models/Game'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Bet from 'App/Models/Bet'
+import CreateBet from 'App/Validators/CreateBetValidator'
+import Updatebet from 'App/Validators/UpdateBetValidator'
 
 export default class BetsController {
   public async index({ response }: HttpContextContract) {
@@ -10,8 +12,8 @@ export default class BetsController {
 
   public async store({ request, response }: HttpContextContract) {
     const userId = 2
-    const body = request.body()
-    const bets = await this.validateBets(userId, body)
+    const payload = await request.validate(CreateBet)
+    const bets = await this.validateBets(userId, payload.games)
     await Bet.createMany(bets)
     return response.created()
   }
@@ -31,53 +33,52 @@ export default class BetsController {
 
   public async validateBet(bet: any) {
     const game = await Game.find(bet.gameId)
-    if (!game) {
-      throw new Error('game type not found')
-    }
+    if (!game) return
     const numbers = bet.chosenNumbers
-    if (!this.arrayContainsOnlyNumbers(numbers)) {
-      throw new Error('there is some value passed in the array which is different from number')
-    }
     if (!(game.maxNumber === numbers.length)) {
       throw new Error('does not have the amount of numbers required by the game')
     }
     if (Math.min(...numbers) <= 0 || Math.max(...numbers) > game.range) {
       throw new Error('the array has some value outside the range allowed by the game')
     }
-    if (!this.arrayHasUniqueElements(numbers)) {
-      throw new Error('there cannot be repeated numbers in the game')
-    }
-    let { userId, gameId, chosenNumbers } = bet
-    chosenNumbers = chosenNumbers.toString()
-    return { userId, gameId, chosenNumbers }
-  }
-
-  public arrayContainsOnlyNumbers(numbers: []) {
-    const regex = /^[\d,]+$/
-    return regex.test(numbers.toString())
-  }
-
-  public arrayHasUniqueElements(numbers: []) {
-    return numbers.every((elem, index, arr) => arr.indexOf(elem) === index)
+    bet.chosenNumbers = numbers.toString()
+    return bet
   }
 
   public async show({ response, params }: HttpContextContract) {
-    const bet = await Bet.find(params.id)
-    if (bet) {
-      await bet.load('gameType')
-      return response.ok(bet)
+    const bet = await this.findBet(params.id)
+    if (!bet) {
+      return response.notFound()
     }
-    return response.notFound()
+    await bet.load('gameType')
+    return response.ok(bet)
   }
 
-  public async update({}: HttpContextContract) {}
+  public async update({ request, response, params }: HttpContextContract) {
+    const bet = await this.findBet(params.id)
+    if (!bet) {
+      return response.notFound()
+    }
+    const payload = await request.validate(Updatebet)
+    const resultValidation = await this.validateBet({
+      gameId: bet.gameId,
+      chosenNumbers: payload.chosen_numbers,
+    })
+    bet.merge(resultValidation)
+    await bet.save()
+    return response.noContent()
+  }
 
   public async destroy({ response, params }: HttpContextContract) {
-    const bet = await Bet.find(params.id)
+    const bet = await this.findBet(params.id)
     if (!bet) {
       return response.notFound()
     }
     await bet.delete()
     return response.noContent()
+  }
+
+  private async findBet(betId: number) {
+    return await Bet.find(betId)
   }
 }

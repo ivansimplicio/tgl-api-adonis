@@ -1,5 +1,7 @@
 import User from 'App/Models/User'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import CreateUser from 'App/Validators/CreateUserValidator'
+import UpdateUser from 'App/Validators/UpdateUserValidator'
 
 export default class UsersController {
   public async index({ response }: HttpContextContract) {
@@ -8,43 +10,41 @@ export default class UsersController {
   }
 
   public async store({ request, response }: HttpContextContract) {
-    try {
-      await User.create(request.only(['name', 'email', 'password', 'role']))
-      return response.created()
-    } catch (err) {
-      return response.unprocessableEntity({ message: 'The email is already registered' })
-    }
+    const payload = await request.validate(CreateUser)
+    await User.create(payload)
+    return response.created()
   }
 
   public async show({ response, params }: HttpContextContract) {
-    const user = await User.find(params.id)
-    if (user) {
-      await user.load('bets')
-      return response.ok(user)
-    }
-    return response.notFound()
-  }
-
-  public async update({ request, response, params }: HttpContextContract) {
-    const user = await User.find(params.id)
+    const user = await this.findUser(params.id)
     if (!user) {
       return response.notFound()
     }
-    try {
-      await user.merge(request.only(['name', 'email']))
-      await user.save()
-      return response.noContent()
-    } catch (err) {
-      return response.unprocessableEntity({ message: 'The email is already registered' })
+    await user.load('bets')
+    return response.ok(user)
+  }
+
+  public async update({ request, response, params }: HttpContextContract) {
+    const user = await this.findUser(params.id)
+    if (!user) {
+      return response.notFound()
     }
+    const payload = await request.validate(UpdateUser)
+    user.merge(payload)
+    await user.save()
+    return response.noContent()
   }
 
   public async destroy({ response, params }: HttpContextContract) {
-    const user = await User.find(params.id)
+    const user = await this.findUser(params.id)
     if (!user) {
       return response.notFound()
     }
     await user.delete()
     return response.noContent()
+  }
+
+  private async findUser(userId: number) {
+    return await User.find(userId)
   }
 }
