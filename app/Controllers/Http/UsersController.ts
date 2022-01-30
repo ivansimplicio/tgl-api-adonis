@@ -3,6 +3,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import CreateUser from 'App/Validators/CreateUserValidator'
 import UpdateUser from 'App/Validators/UpdateUserValidator'
 import Roles from 'App/Enums/Roles'
+import lastMonth from 'App/Services/DateService'
 
 export default class UsersController {
   public async index({ response, bouncer }: HttpContextContract) {
@@ -30,7 +31,9 @@ export default class UsersController {
       return response.notFound()
     }
     await bouncer.authorize('userHasAccess', user)
-    await user.load('bets')
+    await user.load('bets', (query) => {
+      query.where('created_at', '>=', lastMonth().toString())
+    })
     return response.ok(user)
   }
 
