@@ -5,33 +5,36 @@ import CreateBet from 'App/Validators/CreateBetValidator'
 import Updatebet from 'App/Validators/UpdateBetValidator'
 
 export default class BetsController {
-  public async index({ response }: HttpContextContract) {
+  public async index({ response, bouncer }: HttpContextContract) {
+    await bouncer.authorize('isAdmin')
     const bets = await Bet.all()
     return response.ok(bets)
   }
 
-  public async store({ request, response }: HttpContextContract) {
-    const userId = 2
+  public async store({ auth, request, response }: HttpContextContract) {
     const payload = await request.validate(CreateBet)
-    const bets = await validateAllBets(userId, payload.games)
+    const { id } = await auth.use('api').authenticate()
+    const bets = await validateAllBets(id, payload.games)
     await Bet.createMany(bets)
     return response.created()
   }
 
-  public async show({ response, params }: HttpContextContract) {
+  public async show({ response, params, bouncer }: HttpContextContract) {
     const bet = await this.findBet(params.id)
     if (!bet) {
       return response.notFound()
     }
+    await bouncer.authorize('haveAccessToTheGame', bet)
     await bet.load('gameType')
     return response.ok(bet)
   }
 
-  public async update({ request, response, params }: HttpContextContract) {
+  public async update({ request, response, params, bouncer }: HttpContextContract) {
     const bet = await this.findBet(params.id)
     if (!bet) {
       return response.notFound()
     }
+    await bouncer.authorize('haveAccessToTheGame', bet)
     const payload = await request.validate(Updatebet)
     const resultValidation = await betValidator({
       gameId: bet.gameId,
@@ -43,11 +46,12 @@ export default class BetsController {
     return response.noContent()
   }
 
-  public async destroy({ response, params }: HttpContextContract) {
+  public async destroy({ response, params, bouncer }: HttpContextContract) {
     const bet = await this.findBet(params.id)
     if (!bet) {
       return response.notFound()
     }
+    await bouncer.authorize('haveAccessToTheGame', bet)
     await bet.delete()
     return response.noContent()
   }

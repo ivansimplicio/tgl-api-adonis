@@ -9,8 +9,9 @@ export default class GamesController {
     return response.ok(games)
   }
 
-  public async store({ request, response }: HttpContextContract) {
+  public async store({ request, response, bouncer }: HttpContextContract) {
     const payload = await request.validate(CreateGame)
+    await bouncer.authorize('isAdmin')
     await Game.create(payload)
     return response.created()
   }
@@ -23,22 +24,24 @@ export default class GamesController {
     return response.ok(game)
   }
 
-  public async update({ request, response, params }: HttpContextContract) {
+  public async update({ request, response, params, bouncer }: HttpContextContract) {
     const game = await this.findGame(params.id)
     if (!game) {
       return response.notFound()
     }
     const payload = await request.validate(UpdateGame)
+    await bouncer.authorize('isAdmin')
     game.merge(payload)
     await game.save()
     return response.noContent()
   }
 
-  public async destroy({ response, params }: HttpContextContract) {
+  public async destroy({ response, params, bouncer }: HttpContextContract) {
     const game = await this.findGame(params.id)
     if (!game) {
       return response.notFound()
     }
+    await bouncer.authorize('isAdmin')
     await game.delete()
     return response.noContent()
   }
