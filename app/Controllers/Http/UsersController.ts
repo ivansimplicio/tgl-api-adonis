@@ -4,6 +4,7 @@ import CreateUser from 'App/Validators/CreateUserValidator'
 import UpdateUser from 'App/Validators/UpdateUserValidator'
 import Roles from 'App/Enums/Roles'
 import lastMonth from 'App/Services/DateService'
+import WelcomeEmail from 'App/Mailers/WelcomeEmail'
 
 export default class UsersController {
   public async index({ response, bouncer }: HttpContextContract) {
@@ -15,6 +16,7 @@ export default class UsersController {
   public async store({ request, response }: HttpContextContract) {
     const payload = await request.validate(CreateUser)
     await User.create({ ...payload, role: Roles.PLAYER })
+    await new WelcomeEmail(payload.email, payload.name).sendLater()
     return response.created()
   }
 

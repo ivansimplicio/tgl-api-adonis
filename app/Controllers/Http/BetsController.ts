@@ -1,4 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import NewBetEmail from 'App/Mailers/NewBetEmail'
 import Bet from 'App/Models/Bet'
 import { betValidator, validateAllBets } from 'App/Services/BetService'
 import CreateBet from 'App/Validators/CreateBetValidator'
@@ -15,7 +16,11 @@ export default class BetsController {
     const payload = await request.validate(CreateBet)
     const { id } = await auth.use('api').authenticate()
     const bets = await validateAllBets(id, payload.games)
-    await Bet.createMany(bets)
+    const { amount, verifiedBets } = bets
+    await Bet.createMany(verifiedBets)
+    const { email } = await auth.use('api').authenticate()
+    const { name } = await auth.use('api').authenticate()
+    await new NewBetEmail(email, name, amount).sendLater()
     return response.created()
   }
 

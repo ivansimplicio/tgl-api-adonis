@@ -20,7 +20,7 @@ const validateAllBets = async (userId: number, bets: any) => {
       `the value of your bets must total at least ${minCartValue}, but total only ${amount}`
     )
   }
-  return verifiedBets
+  return { amount, verifiedBets }
 }
 
 const betValidator = async (bet: any) => {
