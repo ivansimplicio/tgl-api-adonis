@@ -10,5 +10,3 @@ Route.group(() => {
       destroy: ['auth'],
     })
 })
-
-Route.post('admin', 'UsersController.storeAdmin').middleware('auth')

@@ -11,7 +11,7 @@ export default class CreateUserValidator {
       rules.maxLength(100),
       rules.unique({ table: 'users', column: 'email' }),
     ]),
-    password: schema.string({ trim: true }, [rules.maxLength(150)]),
+    password: schema.string({ trim: true }, [rules.minLength(8), rules.maxLength(30)]),
   })
 
   public messages = {}

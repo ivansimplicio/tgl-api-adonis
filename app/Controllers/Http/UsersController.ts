@@ -20,13 +20,6 @@ export default class UsersController {
     return response.created()
   }
 
-  public async storeAdmin({ request, response, bouncer }: HttpContextContract) {
-    const payload = await request.validate(CreateUser)
-    await bouncer.authorize('isAdmin')
-    await User.create({ ...payload, role: Roles.ADMIN })
-    return response.created()
-  }
-
   public async show({ response, params, bouncer }: HttpContextContract) {
     const user = await this.findUser(params.id)
     if (!user) {
