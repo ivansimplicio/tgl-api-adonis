@@ -1,5 +1,6 @@
 import Game from 'App/Models/Game'
 import Cart from 'App/MOdels/Cart'
+import UnprocessableEntity from 'App/Exceptions/UnprocessableEntityException'
 
 const validateAllBets = async (userId: number, bets: any) => {
   const verifiedBets: Array<any> = []
@@ -16,7 +17,7 @@ const validateAllBets = async (userId: number, bets: any) => {
   }
   const minCartValue = await getMinCartValue(1)
   if (minCartValue && minCartValue > amount) {
-    throw new Error(
+    throw new UnprocessableEntity(
       `the value of your bets must total at least ${minCartValue}, but total only ${amount}`
     )
   }
@@ -28,10 +29,10 @@ const betValidator = async (bet: any) => {
   if (!game) return
   const numbers = bet.chosenNumbers
   if (!(game.maxNumber === numbers.length)) {
-    throw new Error('does not have the amount of numbers required by the game')
+    throw new UnprocessableEntity('does not have the amount of numbers required by the game')
   }
   if (Math.min(...numbers) <= 0 || Math.max(...numbers) > game.range) {
-    throw new Error('the array has some value outside the range allowed by the game')
+    throw new UnprocessableEntity('the array has some value outside the range allowed by the game')
   }
   bet.chosenNumbers = sort(numbers).toString()
   return { price: game.price, ...bet }
