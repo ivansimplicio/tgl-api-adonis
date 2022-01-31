@@ -3,7 +3,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import CreateUser from 'App/Validators/CreateUserValidator'
 import UpdateUser from 'App/Validators/UpdateUserValidator'
 import Roles from 'App/Enums/Roles'
-import lastMonth from 'App/Services/DateService'
+import { startDateLastMonth } from 'App/Services/DateService'
 import WelcomeEmail from 'App/Mailers/WelcomeEmail'
 
 export default class UsersController {
@@ -34,7 +34,7 @@ export default class UsersController {
     }
     await bouncer.authorize('userHasAccess', user)
     await user.load('bets', (query) => {
-      query.where('created_at', '>=', lastMonth().toString())
+      query.where('created_at', '>=', startDateLastMonth().toString())
     })
     return response.ok(user)
   }

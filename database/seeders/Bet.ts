@@ -13,6 +13,13 @@ export default class BetSeeder extends BaseSeeder {
         updatedAt: DateTime.local(2022, 1, 30, 0, 0, 0),
       },
       {
+        chosenNumbers: '1,2,3,4,5,6',
+        gameId: 2,
+        userId: 2,
+        createdAt: DateTime.local(2022, 1, 29, 0, 0, 0),
+        updatedAt: DateTime.local(2022, 1, 29, 0, 0, 0),
+      },
+      {
         chosenNumbers: '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15',
         gameId: 1,
         userId: 2,
@@ -37,6 +44,13 @@ export default class BetSeeder extends BaseSeeder {
         chosenNumbers: '1,2,3,4,5,6',
         gameId: 2,
         userId: 3,
+        createdAt: DateTime.local(2022, 1, 29, 0, 0, 0),
+        updatedAt: DateTime.local(2022, 1, 29, 0, 0, 0),
+      },
+      {
+        chosenNumbers: '1,2,3,4,5,6',
+        gameId: 2,
+        userId: 3,
         createdAt: DateTime.local(2021, 12, 30, 0, 0, 0),
         updatedAt: DateTime.local(2021, 12, 30, 0, 0, 0),
       },
@@ -46,6 +60,27 @@ export default class BetSeeder extends BaseSeeder {
         userId: 3,
         createdAt: DateTime.local(2021, 12, 29, 0, 0, 0),
         updatedAt: DateTime.local(2021, 12, 29, 0, 0, 0),
+      },
+      {
+        chosenNumbers: '1,2,3,4,5',
+        gameId: 3,
+        userId: 4,
+        createdAt: DateTime.local(2022, 1, 24, 0, 0, 0),
+        updatedAt: DateTime.local(2022, 1, 24, 0, 0, 0),
+      },
+      {
+        chosenNumbers: '1,2,3,4,5',
+        gameId: 3,
+        userId: 4,
+        createdAt: DateTime.local(2021, 12, 31, 0, 0, 0),
+        updatedAt: DateTime.local(2021, 12, 31, 0, 0, 0),
+      },
+      {
+        chosenNumbers: '1,2,3,4,5',
+        gameId: 3,
+        userId: 5,
+        createdAt: DateTime.local(2021, 12, 31, 0, 0, 0),
+        updatedAt: DateTime.local(2021, 12, 31, 0, 0, 0),
       },
     ])
   }

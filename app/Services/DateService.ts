@@ -11,4 +11,9 @@ const startDateLastMonth = () => {
   return lastMonth.format('YYYY-MM-DD')
 }
 
-export default startDateLastMonth
+const dateSevenDaysAgo = () => {
+  return moment().subtract('7', 'days').format('YYYY-MM-DD')
+}
+
+export { startDateLastMonth }
+export { dateSevenDaysAgo }
