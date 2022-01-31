@@ -5,6 +5,8 @@ import 'App/Modules/Game/routes'
 import 'App/Modules/Bet/routes'
 
 Route.post('login', 'AuthController.login')
+Route.post('forgot-password', 'PasswordsController.forgotPassword')
+Route.post('reset-password', 'PasswordsController.resetPassword')
 
 Route.get('/', async () => {
   return { hello: 'world' }
