@@ -4,6 +4,7 @@ import UnprocessableEntity from 'App/Exceptions/UnprocessableEntityException'
 
 const validateAllBets = async (userId: number, bets: any) => {
   const verifiedBets: Array<any> = []
+  const allBetsInfo: Array<any> = []
   let amount: number = 0
   for await (const bet of bets) {
     const validatedBet = await betValidator({
@@ -11,8 +12,9 @@ const validateAllBets = async (userId: number, bets: any) => {
       gameId: bet.game_id,
       chosenNumbers: bet.chosen_numbers,
     })
-    const { price, ...result } = validatedBet
+    const { type, price, ...result } = validatedBet
     amount += price
+    allBetsInfo.push(validatedBet)
     verifiedBets.push(result)
   }
   const minCartValue = await getMinCartValue(1)
@@ -21,7 +23,7 @@ const validateAllBets = async (userId: number, bets: any) => {
       `the value of your bets must total at least ${minCartValue}, but total only ${amount}`
     )
   }
-  return { amount, verifiedBets }
+  return { verifiedBets, amount, allBetsInfo }
 }
 
 const betValidator = async (bet: any) => {
@@ -35,7 +37,7 @@ const betValidator = async (bet: any) => {
     throw new UnprocessableEntity('the array has some value outside the range allowed by the game')
   }
   bet.chosenNumbers = sort(numbers).toString()
-  return { price: game.price, ...bet }
+  return { type: game.type, price: game.price, ...bet }
 }
 
 const sort = (numbers: Array<number>) => {

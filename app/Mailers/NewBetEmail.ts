@@ -2,7 +2,12 @@ import Env from '@ioc:Adonis/Core/Env'
 import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail'
 
 export default class NewBetEmail extends BaseMailer {
-  constructor(private email: string, private name: string, private amount: number) {
+  constructor(
+    private email: string,
+    private name: string,
+    private bets: any[],
+    private amount: number
+  ) {
     super()
   }
 
@@ -10,7 +15,7 @@ export default class NewBetEmail extends BaseMailer {
     message
       .from(Env.get('SMTP_EMAIL_SENDER'))
       .to(this.email)
-      .subject('TGL: New Bet made!')
-      .htmlView('emails/new_bet', { name: this.name, amount: this.amount })
+      .subject('TGL: Nova aposta realizada!')
+      .htmlView('emails/new_bet', { name: this.name, bets: this.bets, amount: this.amount })
   }
 }

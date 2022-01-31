@@ -10,7 +10,7 @@ export default class CallPlayerToPlayEmail extends BaseMailer {
     message
       .from(Env.get('SMTP_EMAIL_SENDER'))
       .to(this.email)
-      .subject('TGL: Play Again Today')
+      .subject('TGL: Sentimos sua falta...')
       .htmlView('emails/call_player_to_play', { name: this.name })
   }
 }

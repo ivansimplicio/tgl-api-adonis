@@ -10,7 +10,7 @@ export default class ForgotPasswordEmail extends BaseMailer {
     message
       .from(Env.get('SMTP_EMAIL_SENDER'))
       .to(this.email)
-      .subject('TGL: Password Recovery')
+      .subject('TGL: Recuperação de senha')
       .htmlView('emails/forgot_password', { name: this.name, url: this.resetPasswordUrl })
   }
 }

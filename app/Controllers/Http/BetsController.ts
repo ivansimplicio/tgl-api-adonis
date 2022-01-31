@@ -16,11 +16,11 @@ export default class BetsController {
     const payload = await request.validate(CreateBet)
     const { id } = await auth.use('api').authenticate()
     const bets = await validateAllBets(id, payload.games)
-    const { amount, verifiedBets } = bets
+    const { verifiedBets, amount, allBetsInfo } = bets
     await Bet.createMany(verifiedBets)
     const { email } = await auth.use('api').authenticate()
     const { name } = await auth.use('api').authenticate()
-    await new NewBetEmail(email, name, amount).sendLater()
+    await new NewBetEmail(email, name, allBetsInfo, amount).sendLater()
     return response.created()
   }
 
@@ -45,8 +45,8 @@ export default class BetsController {
       gameId: bet.gameId,
       chosenNumbers: payload.chosen_numbers,
     })
-    const { price, ...result } = resultValidation
-    bet.merge(result)
+    const { chosenNumbers } = resultValidation
+    bet.merge({ chosenNumbers })
     await bet.save()
     return response.noContent()
   }

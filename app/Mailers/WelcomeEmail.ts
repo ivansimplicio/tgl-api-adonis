@@ -10,7 +10,7 @@ export default class WelcomeEmail extends BaseMailer {
     message
       .from(Env.get('SMTP_EMAIL_SENDER'))
       .to(this.email)
-      .subject(`Welcome to TGL, ${this.name}!`)
+      .subject(`TGL: Seja bem-vindo(a), ${this.name}!`)
       .htmlView('emails/welcome', { name: this.name })
   }
 }
