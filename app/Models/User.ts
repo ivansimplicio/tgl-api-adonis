@@ -3,6 +3,7 @@ import { BaseModel, beforeSave, column, HasMany, hasMany } from '@ioc:Adonis/Luc
 import Bet from './Bet'
 import Hash from '@ioc:Adonis/Core/Hash'
 import LinkToken from './LinkToken'
+import UserRoles from './UserRoles'
 
 export default class User extends BaseModel {
   public static table = 'users'
@@ -19,9 +20,6 @@ export default class User extends BaseModel {
   @column({ serializeAs: null })
   public password: string
 
-  @column()
-  public role: string
-
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
@@ -37,6 +35,11 @@ export default class User extends BaseModel {
     foreignKey: 'userId',
   })
   public tokens: HasMany<typeof LinkToken>
+
+  @hasMany(() => UserRoles, {
+    foreignKey: 'userId',
+  })
+  public roles: HasMany<typeof UserRoles>
 
   @beforeSave()
   public static async hashPassword(user: User) {

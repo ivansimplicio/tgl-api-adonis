@@ -14,5 +14,7 @@ export default class IndexSeeder extends BaseSeeder {
     await this.runSeeder(await import('../Game'))
     await this.runSeeder(await import('../User'))
     await this.runSeeder(await import('../Bet'))
+    await this.runSeeder(await import('../Role'))
+    await this.runSeeder(await import('../UserRole'))
   }
 }

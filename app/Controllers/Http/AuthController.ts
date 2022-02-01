@@ -2,6 +2,7 @@ import User from 'App/Models/User'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import StandardError from 'App/Exceptions/Errors/StandardError'
 import LoginUser from 'App/Validators/LoginUserValidator'
+import loadUserRoles from 'App/Services/UserService'
 
 export default class AuthController {
   public async login({ auth, request, response }: HttpContextContract) {
@@ -12,7 +13,10 @@ export default class AuthController {
         expiresIn: '7days',
         name: user?.serialize().email,
       })
-      return { token, user: user?.serialize() }
+      if (user) {
+        const result = await loadUserRoles(user)
+        return { token, user: result }
+      }
     } catch {
       return response.badRequest(new StandardError('BAD_REQUEST', 400, 'Invalid credentials'))
     }

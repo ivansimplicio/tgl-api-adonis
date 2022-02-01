@@ -1,3 +1,5 @@
+import loadUserRoles from 'App/Services/UserService'
+import UserRoles from 'App/Models/UserRoles'
 import User from 'App/Models/User'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import CreateUser from 'App/Validators/CreateUserValidator'
@@ -15,7 +17,8 @@ export default class UsersController {
 
   public async store({ request, response }: HttpContextContract) {
     const payload = await request.validate(CreateUser)
-    await User.create({ ...payload, role: Roles.PLAYER })
+    const user = await User.create(payload)
+    await UserRoles.create({ userId: user.id, roleId: Roles.PLAYER })
     await new WelcomeEmail(payload.email, payload.name).sendLater()
     return response.created()
   }
@@ -29,7 +32,8 @@ export default class UsersController {
     await user.load('bets', (query) => {
       query.where('created_at', '>=', startDateLastMonth().toString())
     })
-    return response.ok(user)
+    const result = await loadUserRoles(user)
+    return response.ok(result)
   }
 
   public async update({ request, response, params, bouncer }: HttpContextContract) {
@@ -41,7 +45,8 @@ export default class UsersController {
     await bouncer.authorize('userHasAccess', user)
     user.merge(payload)
     const updatedUser = await user.save()
-    return response.ok(updatedUser)
+    const result = await loadUserRoles(updatedUser)
+    return response.ok(result)
   }
 
   public async destroy({ response, params, bouncer }: HttpContextContract) {
