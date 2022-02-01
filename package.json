@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "startdb": "node ace migration:run && node ace db:seed",
+    "scheduler": "node ace scheduler:run",
     "dev": "node ace serve --watch",
     "build": "node ace build --production",
     "start": "node ace serve -w -p",
