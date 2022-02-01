@@ -3,6 +3,7 @@ import Roles from 'App/Enums/Roles'
 import User from 'App/Models/User'
 
 import Bouncer from '@ioc:Adonis/Addons/Bouncer'
+import { userHasRole } from 'App/Services/UserService'
 
 export const { actions } = Bouncer.define(
   'userHasAccess',
@@ -11,12 +12,10 @@ export const { actions } = Bouncer.define(
   }
 )
   .define('isAdmin', async (user: User) => {
-    await user.load('roles')
-    const roles: Array<number> = []
-    user.roles.forEach((element) => {
-      roles.push(element.roleId)
-    })
-    return roles.includes(Roles.ADMIN)
+    return userHasRole(user, Roles.ADMIN)
+  })
+  .define('isPlayer', async (user: User) => {
+    return userHasRole(user, Roles.PLAYER)
   })
   .define('haveAccessToTheGame', (user: User, bet: Bet) => {
     return user.id === bet.userId

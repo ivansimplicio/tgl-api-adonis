@@ -1,3 +1,4 @@
+import { userHasRole } from 'App/Services/UserService'
 import Roles from 'App/Enums/Roles'
 import User from 'App/Models/User'
 import { BaseTask } from 'adonis5-scheduler/build'
@@ -8,7 +9,7 @@ import { DateTime } from 'luxon'
 
 export default class CallPlayersToBet extends BaseTask {
   public static get schedule() {
-    return '0 * * * * *'
+    return '0 0 9 * * *'
   }
   public static get useLock() {
     return false
@@ -26,16 +27,11 @@ export default class CallPlayersToBet extends BaseTask {
     const allUsers = await User.query()
     const dateNow = moment(DateTime.now().toJSDate())
     allUsers.forEach(async (user) => {
-      await user.load('roles')
-      const roles: Array<number> = []
-      user.roles.forEach((element) => {
-        roles.push(element.roleId)
-      })
       const dateCreate = moment(user.createdAt.toJSDate())
       if (
         !userIdWithGames.includes(user.id) &&
         dateNow.diff(dateCreate, 'days') >= 7 &&
-        roles.includes(Roles.PLAYER)
+        userHasRole(user, Roles.PLAYER)
       ) {
         await new CallPlayerToPlay(user.email, user.name).sendLater()
       }

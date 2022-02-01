@@ -12,7 +12,8 @@ export default class BetsController {
     return response.ok(bets)
   }
 
-  public async store({ auth, request, response }: HttpContextContract) {
+  public async store({ auth, request, response, bouncer }: HttpContextContract) {
+    await bouncer.authorize('isPlayer')
     const payload = await request.validate(CreateBet)
     const { id } = await auth.use('api').authenticate()
     const bets = await validateAllBets(id, payload.games)
