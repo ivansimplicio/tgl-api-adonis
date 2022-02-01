@@ -3,6 +3,8 @@ import User from 'App/Models/User'
 import { BaseTask } from 'adonis5-scheduler/build'
 import { dateSevenDaysAgo } from 'App/Services/DateService'
 import CallPlayerToPlay from 'App/Mailers/CallPlayerToPlayEmail'
+import moment from 'moment'
+import { DateTime } from 'luxon'
 
 export default class CallPlayersToBet extends BaseTask {
   public static get schedule() {
@@ -22,8 +24,14 @@ export default class CallPlayersToBet extends BaseTask {
       userIdWithGames.push(user.id)
     })
     const allUsers = await User.query()
+    const dateNow = moment(DateTime.now().toJSDate())
     allUsers.forEach(async (user) => {
-      if (!userIdWithGames.includes(user.id) && user.role === Roles.PLAYER) {
+      const dateCreate = moment(user.createdAt.toJSDate())
+      if (
+        !userIdWithGames.includes(user.id) &&
+        dateNow.diff(dateCreate, 'days') >= 7 &&
+        user.role === Roles.PLAYER
+      ) {
         await new CallPlayerToPlay(user.email, user.name).sendLater()
       }
     })
