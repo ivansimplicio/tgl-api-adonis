@@ -7,7 +7,7 @@
     "scheduler": "node ace scheduler:run",
     "dev": "node ace serve --watch",
     "build": "node ace build --production",
-    "start": "node ace serve -w -p",
+    "start": "node ace serve -w",
     "lint": "eslint . --ext=.ts",
     "format": "prettier --write ."
   },
