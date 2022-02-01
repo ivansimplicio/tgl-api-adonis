@@ -40,8 +40,8 @@ export default class UsersController {
     const payload = await request.validate(UpdateUser)
     await bouncer.authorize('userHasAccess', user)
     user.merge(payload)
-    await user.save()
-    return response.noContent()
+    const updatedUser = await user.save()
+    return response.ok(updatedUser)
   }
 
   public async destroy({ response, params, bouncer }: HttpContextContract) {

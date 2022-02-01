@@ -47,8 +47,9 @@ export default class BetsController {
     })
     const { chosenNumbers } = resultValidation
     bet.merge({ chosenNumbers })
-    await bet.save()
-    return response.noContent()
+    const updatedBet = await bet.save()
+    await updatedBet.load('gameType')
+    return response.ok(updatedBet)
   }
 
   public async destroy({ response, params, bouncer }: HttpContextContract) {

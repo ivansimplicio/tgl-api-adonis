@@ -32,8 +32,8 @@ export default class GamesController {
     const payload = await request.validate(UpdateGame)
     await bouncer.authorize('isAdmin')
     game.merge(payload)
-    await game.save()
-    return response.noContent()
+    const updatedGame = await game.save()
+    return response.ok(updatedGame)
   }
 
   public async destroy({ response, params, bouncer }: HttpContextContract) {
