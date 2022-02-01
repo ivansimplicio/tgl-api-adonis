@@ -2,11 +2,13 @@ import Game from 'App/Models/Game'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import CreateGame from 'App/Validators/CreateGameValidator'
 import UpdateGame from 'App/Validators/UpdateGameValidator'
+import getMinCartValue from 'App/Services/CartService'
 
 export default class GamesController {
   public async index({ response }: HttpContextContract) {
     const games = await Game.all()
-    return response.ok(games)
+    const minCartValue = await getMinCartValue()
+    return response.ok({ 'min-cart-value': minCartValue, 'types': games })
   }
 
   public async store({ request, response, bouncer }: HttpContextContract) {

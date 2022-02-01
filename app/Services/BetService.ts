@@ -1,6 +1,6 @@
 import Game from 'App/Models/Game'
-import Cart from 'App/MOdels/Cart'
 import UnprocessableEntity from 'App/Exceptions/UnprocessableEntityException'
+import getMinCartValue from './CartService'
 
 const validateAllBets = async (userId: number, bets: any) => {
   const verifiedBets: Array<any> = []
@@ -17,7 +17,7 @@ const validateAllBets = async (userId: number, bets: any) => {
     allBetsInfo.push(validatedBet)
     verifiedBets.push(result)
   }
-  const minCartValue = await getMinCartValue(1)
+  const minCartValue = await getMinCartValue()
   if (minCartValue && minCartValue > amount) {
     throw new UnprocessableEntity(
       `the value of your bets must total at least ${minCartValue}, but total only ${amount}`
@@ -42,13 +42,6 @@ const betValidator = async (bet: any) => {
 
 const sort = (numbers: Array<number>) => {
   return numbers.sort((x, y) => x - y)
-}
-
-const getMinCartValue = async (cartId: number) => {
-  const cart = await Cart.find(cartId)
-  if (cart) {
-    return cart.minCartValue
-  }
 }
 
 export { betValidator }
