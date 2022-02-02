@@ -1,3 +1,6 @@
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.post('admin', 'AdminsController.store').middleware('auth')
+Route.group(() => {
+  Route.post('', 'AdminsController.store').middleware('auth')
+  Route.put('promote/:id', 'AdminsController.promote').middleware('auth')
+}).prefix('admin')

@@ -12,10 +12,10 @@ export const { actions } = Bouncer.define(
   }
 )
   .define('isAdmin', async (user: User) => {
-    return userHasRole(user, Roles.ADMIN)
+    return await userHasRole(user, Roles.ADMIN)
   })
   .define('isPlayer', async (user: User) => {
-    return userHasRole(user, Roles.PLAYER)
+    return await userHasRole(user, Roles.PLAYER)
   })
   .define('haveAccessToTheGame', (user: User, bet: Bet) => {
     return user.id === bet.userId

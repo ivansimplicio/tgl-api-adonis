@@ -9,7 +9,7 @@ import { DateTime } from 'luxon'
 
 export default class CallPlayersToBet extends BaseTask {
   public static get schedule() {
-    return '0 0 9 * * *'
+    return '0 * * * * *'
   }
   public static get useLock() {
     return false
@@ -28,11 +28,8 @@ export default class CallPlayersToBet extends BaseTask {
     const dateNow = moment(DateTime.now().toJSDate())
     allUsers.forEach(async (user) => {
       const dateCreate = moment(user.createdAt.toJSDate())
-      if (
-        !userIdWithGames.includes(user.id) &&
-        dateNow.diff(dateCreate, 'days') >= 7 &&
-        userHasRole(user, Roles.PLAYER)
-      ) {
+      const isPlayer = await userHasRole(user, Roles.PLAYER)
+      if (!userIdWithGames.includes(user.id) && dateNow.diff(dateCreate, 'days') >= 7 && isPlayer) {
         await new CallPlayerToPlay(user.email, user.name).sendLater()
       }
     })
