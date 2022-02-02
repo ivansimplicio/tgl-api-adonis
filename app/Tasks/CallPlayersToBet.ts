@@ -9,7 +9,7 @@ import { DateTime } from 'luxon'
 
 export default class CallPlayersToBet extends BaseTask {
   public static get schedule() {
-    return '0 * * * * *'
+    return '0 0 9 * * *'
   }
   public static get useLock() {
     return false
