@@ -1,12 +1,39 @@
 version: "3"
 
+networks:
+  adonis-api:
+    external: true
+
 services:
   app:
+    container_name: api-adonis
     build:
       context: .
       dockerfile: ./Dockerfile
     command: npm start
-    ports:
-      - "3333:3333"
+    image: api-adonis
     volumes:
       - .:/app
+      - /app/node_modules
+    networks:
+      - adonis-api
+    depends_on:
+      - db
+    ports:
+      - '3333:3333'
+
+  db:
+    container_name: db-api
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=126453
+      - MYSQL_DATABASE=prova_adonis
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    networks:
+      - adonis-api
+    command: mysqld --innodb_use_native_aio=0 --default-authentication-plugin=mysql_native_password
+    volumes:
+      - /db/var/lib/mysql

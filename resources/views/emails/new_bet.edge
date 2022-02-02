@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <style>
+        body {
+            background-color: #e0eff1;
+            color: #680148;
+            text-align: center;
+            font-family: Helvetica;
+            font-weight: bold;
+            padding: auto;
+            margin-top: 0;
+            font-size: 30px;
+        }
+        .header {
+            background-color: #7db4b5;
+            padding: 5%;
+        }
+        h1 {
+            font-size: 52px;
+        }
+        table,
+        td,
+        th {
+            margin-left: auto;
+            margin-right: auto;
+            border: 4px solid #680148;
+            border-collapse: collapse;
+            padding: 10px 15px 10px 15px;
+        }
+        td {
+            color: #269294;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Confirmação das apostas realizadas!</h1>
+    </div>
+    <h2>Olá, {{ name }}! Aqui está um resumo das apostas que você realizou. 😁</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>TIPO</th>
+                <th>NÚMEROS ESCOLHIDOS</th>
+                <th>VALOR</th>
+            </tr>
+        </thead>
+        <tbody>
+            @each(bet in bets)
+              <tr>
+                <td>{{ bet.type }}</td>
+                <td>{{ bet.chosenNumbers }}</td>
+                <td>{{ bet.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}</td>
+              </tr>
+            @end
+        </tbody>
+    </table>
+    <p>Todas essas apostas foram registradas no sistema, com valor total de {{ amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}.</p>
+    <div class="header">
+        <p>Estamos torcendo por você!</p>
+        <p>Equipe TGL</p>
+    </div>
+    </div>
+</body>
+</html>

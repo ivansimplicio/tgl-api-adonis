@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "startdb": "node ace migration:run && node ace db:seed",
+    "scheduler": "node ace scheduler:run",
     "dev": "node ace serve --watch",
     "build": "node ace build --production",
-    "start": "node ace serve -w -p",
+    "start": "node ace serve -w",
     "lint": "eslint . --ext=.ts",
     "format": "prettier --write ."
   },
@@ -23,8 +25,18 @@
     "youch-terminal": "^2.1.0"
   },
   "dependencies": {
+    "@adonisjs/auth": "^8.0.10",
+    "@adonisjs/bouncer": "^2.2.5",
     "@adonisjs/core": "^5.4.2",
+    "@adonisjs/lucid": "^16.3.2",
+    "@adonisjs/mail": "^7.2.4",
     "@adonisjs/repl": "^3.1.8",
+    "@adonisjs/view": "^6.1.1",
+    "adonis5-scheduler": "^2.0.2",
+    "luxon": "^2.3.0",
+    "moment": "^2.29.1",
+    "mysql": "^2.18.1",
+    "phc-argon2": "^1.1.2",
     "proxy-addr": "^2.0.7",
     "reflect-metadata": "^0.1.13",
     "source-map-support": "^0.5.21"
