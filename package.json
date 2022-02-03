@@ -10,7 +10,8 @@
     "start": "node ace serve -w",
     "lint": "eslint . --ext=.ts",
     "format": "prettier --write .",
-    "test": "node -r @adonisjs/assembler/build/register japaFile.ts"
+    "test": "node -r @adonisjs/assembler/build/register japaFile.ts",
+    "coverage": "nyc npm run test"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^5.4.1",
@@ -23,6 +24,7 @@
     "execa": "^5.1.1",
     "get-port": "^5.1.1",
     "japa": "^4.0.0",
+    "nyc": "^15.1.0",
     "pino-pretty": "^7.5.0",
     "prettier": "^2.5.1",
     "sqlite3": "^5.0.2",
