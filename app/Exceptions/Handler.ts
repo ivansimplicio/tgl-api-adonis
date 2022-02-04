@@ -14,7 +14,9 @@ export default class ExceptionHandler extends HttpExceptionHandler {
         .status(404)
         .send(new StandardError('NOT_FOUND', 404, 'non-existent or already used token'))
     }
-
+    if (error.code === 'E_AUTHORIZATION_FAILURE') {
+      return ctx.response.status(403).send(new StandardError('FORBIDDEN', 403, 'not authorized'))
+    }
     return super.handle(error, ctx)
   }
 }
