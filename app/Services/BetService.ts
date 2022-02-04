@@ -27,8 +27,7 @@ const validateAllBets = async (userId: number, bets: any) => {
 }
 
 const betValidator = async (bet: any) => {
-  const game = await Game.find(bet.gameId)
-  if (!game) return
+  const game = await Game.findOrFail(bet.gameId)
   const numbers = bet.chosenNumbers
   if (!(game.maxNumber === numbers.length)) {
     throw new UnprocessableEntity('does not have the amount of numbers required by the game')
