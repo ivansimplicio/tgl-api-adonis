@@ -1,3 +1,4 @@
+// import ProducerService from 'App/Services/kafka/ProducerService'
 import { userHasRole } from 'App/Services/UserService'
 import Roles from 'App/Enums/Roles'
 import User from 'App/Models/User'
@@ -31,6 +32,10 @@ export default class CallPlayersToBet extends BaseTask {
       const isPlayer = await userHasRole(user, Roles.PLAYER)
       if (!userIdWithGames.includes(user.id) && dateNow.diff(dateCreate, 'days') >= 7 && isPlayer) {
         await new CallPlayerToPlay(user.email, user.name).sendLater()
+        // await new ProducerService().produceTopicCallPlayersEmail({
+        //   name: user.name,
+        //   email: user.email,
+        // })
       }
     })
   }

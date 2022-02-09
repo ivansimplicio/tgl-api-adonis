@@ -1,9 +1,11 @@
+import ProducerService from 'App/Services/kafka/ProducerService'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import NewBetEmail from 'App/Mailers/NewBetEmail'
+// import NewBetEmail from 'App/Mailers/NewBetEmail'
 import Bet from 'App/Models/Bet'
 import { betValidator, validateAllBets } from 'App/Services/BetService'
 import CreateBet from 'App/Validators/CreateBetValidator'
 import Updatebet from 'App/Validators/UpdateBetValidator'
+import allAdmins from 'App/Services/AdminService'
 
 export default class BetsController {
   public async index({ response, bouncer }: HttpContextContract) {
@@ -21,7 +23,12 @@ export default class BetsController {
     await Bet.createMany(verifiedBets)
     const { email } = await auth.use('api').authenticate()
     const { name } = await auth.use('api').authenticate()
-    await new NewBetEmail(email, name, allBetsInfo, amount).sendLater()
+    await new ProducerService().produceTopicNewBetEmail({ name, email }, allBetsInfo, amount)
+    const admins = await allAdmins()
+    admins.forEach(async (element) => {
+      await new ProducerService().produceTopicNotifyAdminEmail(element, { name, email }, amount)
+    })
+    // await new NewBetEmail(email, name, allBetsInfo, amount).sendLater()
     return response.created()
   }
 

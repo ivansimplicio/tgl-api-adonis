@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@adonisjs/assembler": "^5.4.1",
+    "@types/kafkajs": "^1.9.0",
     "@types/supertest": "^2.0.11",
     "adonis-preset-ts": "^2.1.0",
     "eslint": "^8.7.0",
@@ -42,6 +43,7 @@
     "@adonisjs/repl": "^3.1.8",
     "@adonisjs/view": "^6.1.1",
     "adonis5-scheduler": "^2.0.2",
+    "kafkajs": "^1.16.0",
     "luxon": "^2.3.0",
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
