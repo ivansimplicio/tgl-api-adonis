@@ -1,6 +1,5 @@
 import ProducerService from 'App/Services/kafka/ProducerService'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-// import NewBetEmail from 'App/Mailers/NewBetEmail'
 import Bet from 'App/Models/Bet'
 import { betValidator, validateAllBets } from 'App/Services/BetService'
 import CreateBet from 'App/Validators/CreateBetValidator'
@@ -28,7 +27,6 @@ export default class BetsController {
     admins.forEach(async (element) => {
       await new ProducerService().produceTopicNotifyAdminEmail(element, { name, email }, amount)
     })
-    // await new NewBetEmail(email, name, allBetsInfo, amount).sendLater()
     return response.created()
   }
 
