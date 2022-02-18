@@ -1,39 +1,42 @@
 version: "3"
 
 networks:
-  adonis-api:
+  tgl:
     external: true
+  tgl-api:
+    driver: bridge
 
 services:
   app:
-    container_name: api-adonis
+    container_name: tgl-api-adonis
     build:
       context: .
       dockerfile: ./Dockerfile
     command: npm start
-    image: api-adonis
+    image: tgl-api-adonis
     volumes:
       - .:/app
       - /app/node_modules
     networks:
-      - adonis-api
+      - tgl
+      - tgl-api
     depends_on:
       - db
     ports:
       - '3333:3333'
 
   db:
-    container_name: db-api
+    container_name: db-tgl-api
     image: mysql:latest
     environment:
       - MYSQL_ROOT_PASSWORD=126453
-      - MYSQL_DATABASE=prova_adonis
+      - MYSQL_DATABASE=db_tgl_api
     ports:
       - '3306:3306'
     expose:
       - '3306'
     networks:
-      - adonis-api
+      - tgl-api
     command: mysqld --innodb_use_native_aio=0 --default-authentication-plugin=mysql_native_password
     volumes:
       - /db/var/lib/mysql
