@@ -1,6 +1,6 @@
+import ProducerService from 'App/Services/kafka/ProducerService'
 import User from 'App/Models/User'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import ForgotPasswordEmail from 'App/Mailers/ForgotPasswordEmail'
 import { randomBytes } from 'crypto'
 import { promisify } from 'util'
 import ForgotPassword from 'App/Validators/ForgotPasswordValidator'
@@ -21,7 +21,7 @@ export default class PasswordsController {
     )
     const url = request.completeUrl().replace(request.url(), '/reset-password')
     const resetPasswordUrlWithToken = `${url}?token=${token}`
-    await new ForgotPasswordEmail(email, user.name, resetPasswordUrlWithToken).sendLater()
+    await new ProducerService().produceTopicForgotPasswordEmail(user, resetPasswordUrlWithToken)
     return response.noContent()
   }
 
